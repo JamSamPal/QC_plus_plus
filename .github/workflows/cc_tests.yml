@@ -1,0 +1,50 @@
+name: C++ CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout the repo
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Install dependencies
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y build-essential cmake libgtest-dev
+
+      # 3. Build GoogleTest (if installed via libgtest-dev)
+      - name: Build GoogleTest
+        run: |
+          cd /usr/src/gtest
+          sudo cmake CMakeLists.txt
+          sudo make
+          sudo cp *.a /usr/lib
+
+      # 4. Create build directory
+      - name: Create build directory
+        run: mkdir build && cd build
+
+      # 5. Configure project with CMake
+      - name: CMake configure
+        run: |
+          cd build
+          cmake ..
+
+      # 6. Build the project
+      - name: Build
+        run: |
+          cd build
+          cmake --build . --config Release
+
+      # 7. Run tests
+      - name: Run tests
+        run: |
+          cd build
+          ctest --output-on-failure
