@@ -11,33 +11,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Install dependencies
-      run: |
-        sudo apt update
-        sudo apt install -y build-essential cmake libgtest-dev
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y build-essential cmake
 
-        # Build GoogleTest (system library)
-        cd /usr/src/gtest
-        sudo cmake CMakeLists.txt
-        sudo make
-        sudo cp *.a /usr/lib
-        cd -
-
-    - name: Configure project
-      run: |
-        mkdir -p build
-        cd build
-        cmake ..
-
-    - name: Build project
-      run: |
-        cd build
-        cmake --build . -- -j$(nproc)
-
-    - name: Run tests
-      run: |
-        cd build
-        ctest --output-on-failure
+      - name: Build and run tests
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          cmake --build . --config Release
+          ctest --output-on-failure
