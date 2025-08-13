@@ -1,7 +1,15 @@
 #include "Operators.hpp"
 #include "Qubit.hpp"
+#include <algorithm>
 
-Qubit PauliX::ApplyX(const Qubit &q) {
+void PauliX::ApplyX(Qubit &q) {
     // Pauli X matrix simply changes |0> -> |1> and |1> -> |0>
-    return {q.beta, q.alpha};
+    // It modifies the state
+    std::swap(q.alpha, q.beta);
+}
+
+Qubit PauliZ::ApplyZ(const Qubit &q) {
+    // This will be used to get the syndrome and so
+    // doesn't modify the state
+    return {q.alpha, -q.beta};
 }
