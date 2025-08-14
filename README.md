@@ -4,13 +4,20 @@ Project that explores QEC codes.
 - Uses OOP, passing semantics and CI best practises
 
 ## Running
+git clone ....
 
 cd QEC-Codes
+
 mkdir build
+
 cd build
+
 cmake ..
+
 make
+
 cd tests
+
 ./TEST_NAME
 
 ## Background
