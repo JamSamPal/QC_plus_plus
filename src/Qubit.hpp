@@ -4,6 +4,8 @@
 #include <vector>
 class QubitState {
 public:
+    int numQubits;
+    int numStates;
     // The amplitudes of the |0> and |1>
     // states of the qubit (which is put in an entangled state)
     // state[0] = |000>
@@ -11,12 +13,16 @@ public:
     // ...
     // state[7] = |111>
     std::vector<std::complex<double>> state;
-    int numQubits;
-    int numStates;
-    QubitState(const int &numQubits) : numQubits(numQubits) {
-        numStates = 1 << numQubits;
-        state.resize(numStates);
+    QubitState(const int &numQubits) : numQubits(numQubits), numStates(GetNumStates(numQubits)), state(numStates), currentEigenvalues(numStates, 1.0) {
     }
+    constexpr static int GetNumStates(const int &numQubits);
+    // Holds the pre-factor from the act of an operator on the state
+    // this is different to the amplitude
+    std::vector<double> currentEigenvalues;
 };
+
+constexpr int QubitState::GetNumStates(const int &numQubits) {
+    return 1 << numQubits;
+}
 
 #endif /* D670A8F1_C2B1_4FCE_9D6A_1D8D5411A39A */

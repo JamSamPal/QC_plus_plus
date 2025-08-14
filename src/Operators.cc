@@ -19,3 +19,17 @@ void PauliX::ApplyX(QubitState &psi, const int &index, const int &numQubits) {
         }
     }
 }
+
+void PauliZ::ApplyZ(QubitState &psi, const int &index, const int &numQubits) {
+    // Pauli Z matrix acting on bit at index = index
+    // Z |0> = +1 |0>
+    // Z |1> = -1 |1>
+    int parity_bit = 1 << (numQubits - 1 - index);
+    for (int i = 0; i < psi.state.size(); i++) {
+        int isBitSet = i & parity_bit;
+
+        if (isBitSet != 0) {
+            psi.currentEigenvalues[i] *= -1.0;
+        }
+    }
+}
