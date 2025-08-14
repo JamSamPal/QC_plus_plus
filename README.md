@@ -3,6 +3,16 @@ Project that explores QEC codes.
 
 - Uses OOP, passing semantics and CI best practises
 
+## Running
+
+cd QEC-Codes
+mkdir build
+cd build
+cmake ..
+make
+cd tests
+./TEST_NAME
+
 ## Background
 Quantum Error Correcting codes, like their classical counterparts, seek to make information robust to error by cleverly encoding it. Unlike in the classical case, operations like copying the data or examining individual (qu)bits directly are not available due to the no-cloning theorem and wavefunction collapse respectively. 
 
