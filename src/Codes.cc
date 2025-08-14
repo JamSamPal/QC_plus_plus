@@ -75,6 +75,6 @@ void ThreeQubitCode::Decode() {
 
 void ThreeQubitCode::ApplySyndrome() {
     if (errorIndex >= 0) {
-        X.ApplyX(state, errorIndex);
+        X.ApplyX(state, errorIndex, 3);
     }
 }

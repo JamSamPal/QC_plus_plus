@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 
 TEST(OperatorTest, Pauli_X) {
-    QubitState q;
+    QubitState q(3);
     std::complex<double> alpha(0.0, 1.0);
     std::complex<double> beta(1.0, 1.0);
     q.state[0] = alpha;
@@ -15,7 +15,7 @@ TEST(OperatorTest, Pauli_X) {
     // alpha |000> + beta |111> to
     // alpha |100> + beta |011>
     PauliX X;
-    X.ApplyX(q, 0);
+    X.ApplyX(q, 0, 3);
     // Previous state should now be zero
     EXPECT_DOUBLE_EQ(q.state[0].real(), 0.0);
     EXPECT_DOUBLE_EQ(q.state[0].imag(), 0.0);

@@ -4,7 +4,7 @@
 #include <gtest/gtest.h>
 
 TEST(QubitTest, Constructor) {
-    QubitState q;
+    QubitState q(3);
     std::complex<double> alpha(0.0, 1.0);
     std::complex<double> beta(1.0, 1.0);
     q.state[0] = alpha;

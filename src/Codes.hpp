@@ -8,6 +8,7 @@
 //
 class ThreeQubitCode {
 public:
+    ThreeQubitCode() : state(3) {};
     QubitState state;
     void EncodeLogical(const std::complex<double> &alpha, const std::complex<double> &beta);
     void MeasureSyndrome();

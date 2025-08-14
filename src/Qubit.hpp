@@ -11,11 +11,11 @@ public:
     // ...
     // state[7] = |111>
     std::vector<std::complex<double>> state;
-
-    QubitState() : state(8, 0.0) {
-        for (int i = 0; i < 8; ++i) {
-            state[i] = std::complex<double>(0.0, 0.0);
-        }
+    int numQubits;
+    int numStates;
+    QubitState(const int &numQubits) : numQubits(numQubits) {
+        numStates = 1 << numQubits;
+        state.resize(numStates);
     }
 };
 
