@@ -13,12 +13,9 @@ public:
     // ...
     // state[7] = |111>
     std::vector<std::complex<double>> state;
-    QubitState(const int &numQubits) : numQubits(numQubits), numStates(GetNumStates(numQubits)), state(numStates), currentEigenvalues(numStates, 1.0) {
+    QubitState(const int &numQubits) : numQubits(numQubits), numStates(GetNumStates(numQubits)), state(numStates) {
     }
     constexpr static int GetNumStates(const int &numQubits);
-    // Holds the pre-factor from the act of an operator on the state
-    // this is different to the amplitude
-    std::vector<double> currentEigenvalues;
 };
 
 constexpr int QubitState::GetNumStates(const int &numQubits) {

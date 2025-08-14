@@ -6,7 +6,7 @@
 //
 class MatrixHelper {
 public:
-    double ExpectationValue(const QubitState &input);
+    double InnerProduct(const QubitState &input1, const QubitState &input2);
 };
 
 #endif /* FF54B531_4A55_41D5_87E3_85ACF6806CDE */

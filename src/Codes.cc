@@ -13,13 +13,13 @@ void ThreeQubitCode::MeasureSyndrome() {
     Z0Z1 = state;
     Z.ApplyZ(Z0Z1, 0, c_numQubits);
     Z.ApplyZ(Z0Z1, 1, c_numQubits);
-    double s_1 = M.ExpectationValue(Z0Z1);
+    double s_1 = M.InnerProduct(state, Z0Z1);
     // Z2*Z3
     QubitState Z1Z2(c_numQubits);
     Z1Z2 = state;
     Z.ApplyZ(Z1Z2, 1, c_numQubits);
     Z.ApplyZ(Z1Z2, 2, c_numQubits);
-    double s_2 = M.ExpectationValue(Z1Z2);
+    double s_2 = M.InnerProduct(state, Z1Z2);
 
     // If less than 1 then an error has occurred
     // (a bit flip of either the first or second bit)

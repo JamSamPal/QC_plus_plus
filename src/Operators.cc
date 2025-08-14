@@ -29,7 +29,7 @@ void PauliZ::ApplyZ(QubitState &psi, const int &index, const int &numQubits) {
         int isBitSet = i & parity_bit;
 
         if (isBitSet != 0) {
-            psi.currentEigenvalues[i] *= -1.0;
+            psi.state[i] *= -1.0;
         }
     }
 }

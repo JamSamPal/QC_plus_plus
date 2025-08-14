@@ -42,6 +42,8 @@ TEST(OperatorTest, Pauli_Z) {
     // alpha |000> - beta |100>
     PauliZ Z;
     Z.ApplyZ(q, 0, 3);
-    EXPECT_DOUBLE_EQ(q.currentEigenvalues[0], 1.0);
-    EXPECT_DOUBLE_EQ(q.currentEigenvalues[4], -1.0);
+    EXPECT_DOUBLE_EQ(q.state[0].real(), alpha.real());
+    EXPECT_DOUBLE_EQ(q.state[0].imag(), alpha.imag());
+    EXPECT_DOUBLE_EQ(q.state[4].real(), -beta.real());
+    EXPECT_DOUBLE_EQ(q.state[4].imag(), -beta.imag());
 }

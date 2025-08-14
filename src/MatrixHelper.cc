@@ -1,13 +1,14 @@
 #include "MatrixHelper.hpp"
 
-double MatrixHelper::ExpectationValue(const QubitState &input) {
-    // Calculates expectation value of quantum state
-    // sum_i e_i <psi_i | psi_i >
-    double tot = 0.0;
+double MatrixHelper::InnerProduct(const QubitState &input1, const QubitState &input2) {
+    // Calculates
+    // sum_i <psi_i | psi'_i >
+    std::complex<double> tot(0.0, 0.0);
 
-    for (int i = 0; i < input.state.size(); i++) {
-        tot += input.currentEigenvalues[i] * std::norm(input.state[i]);
+    for (int i = 0; i < input1.state.size(); i++) {
+        tot += (std::conj(input1.state[i]) * input2.state[i]);
     }
 
-    return tot;
+    // If all has gone correctly the imaginary part should be zero
+    return tot.real();
 }
