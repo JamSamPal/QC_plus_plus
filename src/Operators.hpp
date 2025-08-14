@@ -7,7 +7,7 @@
 class PauliX {
 public:
     PauliX() {};
-    void ApplyX(QubitState &psi, const int &index);
+    void ApplyX(QubitState &psi, const int &index, const int &numQubits);
 };
 
 #endif /* DDFFC357_B156_4108_B576_06019B4A3A44 */

@@ -28,7 +28,7 @@ TEST(Qubit3CodeTest, MeasureSyndrome) {
     // alpha |000> + beta |111> to
     // alpha |100> + beta |011>
     PauliX X;
-    X.ApplyX(TQC.state, 0);
+    X.ApplyX(TQC.state, 0, 3);
 
     // Find syndromes
     TQC.MeasureSyndrome();
@@ -47,7 +47,7 @@ TEST(Qubit3CodeTest, Decode) {
     // alpha |000> + beta |111> to
     // alpha |100> + beta |011>
     PauliX X;
-    X.ApplyX(TQC.state, 0);
+    X.ApplyX(TQC.state, 0, 3);
 
     // Find syndromes
     TQC.MeasureSyndrome();
@@ -66,7 +66,7 @@ TEST(Qubit3CodeTest, ApplySyndrome) {
     // alpha |000> + beta |111> to
     // alpha |100> + beta |011>
     PauliX X;
-    X.ApplyX(TQC.state, 0);
+    X.ApplyX(TQC.state, 0, 3);
 
     // Find syndromes
     TQC.MeasureSyndrome();
