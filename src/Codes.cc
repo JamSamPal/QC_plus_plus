@@ -1,47 +1,80 @@
 #include "Codes.hpp"
-#include "MatrixHelpers.hpp"
 #include "Operators.hpp"
 #include "Qubit.hpp"
-void ThreeQubitCode::EncodeLogical(const int &logical) {
-    Qubit q;
-    if (logical == 1) {
-        q.alpha = 0.0; // |1>
-        q.beta = 1.0;
-    } else {
-        q.alpha = 1.0; // |0>
-        q.beta = 0.0;
+void ThreeQubitCode::EncodeLogical(const std::complex<double> &alpha, const std::complex<double> &beta) {
+    state.state[0] = alpha;
+    state.state[7] = beta;
+}
+
+double ThreeQubitCode::ExpectationZZ(const int &indexA, const int &indexB) {
+    // Calculates expectation value of Z_A * Z_B
+    double exp = 0.0;
+    double zA = 0.0;
+    double zB = 0.0;
+    for (int i = 0; i < 8; i++) {
+        // Find the bits at index A and B
+        // Shift them into the LSB position
+        // and then mask to just extract the bit
+        int bitA = (i >> (2 - indexA)) & 1;
+        int bitB = (i >> (2 - indexB)) & 1;
+
+        // If bit is a zero then applying Z operator:
+        // Z |0> = +1|0>
+        // Else it's a one
+        // Z |1> = -1|1>
+        if (bitA == 0) {
+            zA = 1;
+        } else {
+            zA = -1;
+        }
+
+        if (bitB == 0) {
+            zB = 1;
+        } else {
+            zB = -1;
+        }
+
+        // The expectation value is given by the sum over
+        // <\psi_i | Z_A Z_B |\psi_i> for all states
+        // Calculating the eigenvalues this is then simply
+        // zA*zB multiplied by the sum over <\psi_i |\psi_i>.
+        // Of course, our usual entangled state we start with
+        // has \psi_0, \psi_7 != 0 and the rest equal to 0.
+        exp += zA * zB * std::norm(state.state[i]);
     }
-    state[0] = q;
-    state[1] = q;
-    state[2] = q;
+
+    return exp;
+}
+
+void ThreeQubitCode::MeasureSyndrome() {
+    // Expectation values of syndrome operators:
+    // Z1*Z2 and Z2*Z3
+    double s_1 = ExpectationZZ(0, 1);
+    double s_2 = ExpectationZZ(1, 2);
+
+    if (s_1 < 0) {
+        syndrome1 = 1;
+    } else {
+        syndrome1 = 0;
+    }
+
+    if (s_2 < 0) {
+        syndrome2 = 1;
+    } else {
+        syndrome2 = 0;
+    }
+}
+const int ThreeQubitCode::lookup[2][2] = {
+    {-1, 2}, // s1=0
+    {0, 1}   // s1=1
+};
+
+void ThreeQubitCode::Decode() {
+    errorIndex = lookup[syndrome1][syndrome2];
 }
 
 void ThreeQubitCode::ApplySyndrome() {
-    // Expectation values of Z1, Z2 and Z3 operators
-    Qubit q_0, q_1, q_2;
-    q_0 = Z.ApplyZ(state[0]);
-    q_1 = Z.ApplyZ(state[1]);
-    q_2 = Z.ApplyZ(state[2]);
-
-    MatrixHelpers M;
-    double e_0 = M.InnerProduct(state[0], q_0);
-    double e_1 = M.InnerProduct(state[1], q_1);
-    double e_2 = M.InnerProduct(state[2], q_2);
-
-    // Calculate syndromes, e.g. the expectation of Z1*Z2 and Z2*Z3
-    // As state factorises this is just the product of
-    // the expectation values of Z1 and Z2, and Z2 and Z3
-    double s_1 = e_0 * e_1;
-    double s_2 = e_1 * e_2;
-
-    if (s_1 < 0 && s_2 < 0) {
-        // Error is in second bit
-        X.ApplyX(state[1]);
-    } else if (s_1 < 0 && s_2 > 0) {
-        // Error is in first bit
-        X.ApplyX(state[0]);
-    } else if (s_1 > 0 && s_2 < 0) {
-        // Error is in third bit
-        X.ApplyX(state[2]);
+    if (errorIndex >= 0) {
+        X.ApplyX(state, errorIndex);
     }
 }

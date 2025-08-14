@@ -8,11 +8,19 @@
 //
 class ThreeQubitCode {
 public:
-    ThreeQubitCode() : state(3) {}
-    void EncodeLogical(const int &logical);
-    std::vector<Qubit> state;
+    QubitState state;
+    void EncodeLogical(const std::complex<double> &alpha, const std::complex<double> &beta);
+    void MeasureSyndrome();
+    void Decode();
     void ApplySyndrome();
+    int syndrome1;
+    int syndrome2;
+    int errorIndex;
     PauliX X;
-    PauliZ Z;
+
+private:
+    double ExpectationZZ(const int &indexA, const int &indexB);
+    static const int lookup[2][2];
 };
+
 #endif /* EF4B01CA_BAA1_4AED_A5B4_9DFED445F636 */

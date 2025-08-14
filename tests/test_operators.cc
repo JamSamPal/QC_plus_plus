@@ -5,22 +5,26 @@
 #include <gtest/gtest.h>
 
 TEST(OperatorTest, Pauli_X) {
-    Qubit q;
-    EXPECT_DOUBLE_EQ(q.alpha, 1.0);
-    EXPECT_DOUBLE_EQ(q.beta, 0.0);
+    QubitState q;
+    std::complex<double> alpha(0.0, 1.0);
+    std::complex<double> beta(1.0, 1.0);
+    q.state[0] = alpha;
+    q.state[7] = beta;
 
+    // Flip the leftmost bit taking
+    // alpha |000> + beta |111> to
+    // alpha |100> + beta |011>
     PauliX X;
-    X.ApplyX(q);
-    EXPECT_DOUBLE_EQ(q.alpha, 0.0);
-    EXPECT_DOUBLE_EQ(q.beta, 1.0);
-}
+    X.ApplyX(q, 0);
+    // Previous state should now be zero
+    EXPECT_DOUBLE_EQ(q.state[0].real(), 0.0);
+    EXPECT_DOUBLE_EQ(q.state[0].imag(), 0.0);
+    EXPECT_DOUBLE_EQ(q.state[7].real(), 0.0);
+    EXPECT_DOUBLE_EQ(q.state[7].imag(), 0.0);
 
-TEST(OperatorTest, Pauli_Z) {
-    Qubit q_in(0.0, 1.0);
-
-    PauliZ Z;
-    Qubit q_out;
-    q_out = Z.ApplyZ(q_in);
-    EXPECT_DOUBLE_EQ(q_out.alpha, 0.0);
-    EXPECT_DOUBLE_EQ(q_out.beta, -1.0);
+    // New state should equal alpha, beta
+    EXPECT_DOUBLE_EQ(q.state[4].real(), alpha.real());
+    EXPECT_DOUBLE_EQ(q.state[4].imag(), alpha.imag());
+    EXPECT_DOUBLE_EQ(q.state[3].real(), beta.real());
+    EXPECT_DOUBLE_EQ(q.state[3].imag(), beta.imag());
 }

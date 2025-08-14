@@ -4,63 +4,78 @@
 #include "../src/Qubit.hpp"
 #include <gtest/gtest.h>
 
-TEST(Qubit3CodeTest, Logical0Qubit) {
-    int logical_bit = 0;
+TEST(Qubit3CodeTest, Encode) {
     ThreeQubitCode TQC;
-    TQC.EncodeLogical(logical_bit);
+    std::complex<double> alpha(1.0, 1.0);
+    std::complex<double> beta(1.0, 1.0);
+    TQC.EncodeLogical(alpha, beta);
 
-    EXPECT_DOUBLE_EQ(TQC.state[0].alpha, 1.0);
-    EXPECT_DOUBLE_EQ(TQC.state[0].beta, 0.0);
+    EXPECT_DOUBLE_EQ(TQC.state.state[0].real(), alpha.real());
+    EXPECT_DOUBLE_EQ(TQC.state.state[0].imag(), alpha.imag());
 
-    EXPECT_DOUBLE_EQ(TQC.state[1].alpha, 1.0);
-    EXPECT_DOUBLE_EQ(TQC.state[1].beta, 0.0);
-
-    EXPECT_DOUBLE_EQ(TQC.state[2].alpha, 1.0);
-    EXPECT_DOUBLE_EQ(TQC.state[2].beta, 0.0);
+    EXPECT_DOUBLE_EQ(TQC.state.state[7].real(), beta.real());
+    EXPECT_DOUBLE_EQ(TQC.state.state[7].imag(), beta.imag());
 }
 
-TEST(Qubit3CodeTest, Logical1Qubit) {
-    int logical_bit = 1;
+TEST(Qubit3CodeTest, MeasureSyndrome) {
+
     ThreeQubitCode TQC;
-    TQC.EncodeLogical(logical_bit);
+    std::complex<double> alpha(1.0, 1.0);
+    std::complex<double> beta(1.0, 1.0);
+    TQC.EncodeLogical(alpha, beta);
 
-    EXPECT_DOUBLE_EQ(TQC.state[0].alpha, 0.0);
-    EXPECT_DOUBLE_EQ(TQC.state[0].beta, 1.0);
-
-    EXPECT_DOUBLE_EQ(TQC.state[1].alpha, 0.0);
-    EXPECT_DOUBLE_EQ(TQC.state[1].beta, 1.0);
-
-    EXPECT_DOUBLE_EQ(TQC.state[2].alpha, 0.0);
-    EXPECT_DOUBLE_EQ(TQC.state[2].beta, 1.0);
-}
-
-TEST(Qubit3CodeTest, bitflip) {
-    int logical_bit = 1;
-    ThreeQubitCode TQC;
-    TQC.EncodeLogical(logical_bit);
-
-    // Flip the second qubit
+    // Flip the leftmost bit taking
+    // alpha |000> + beta |111> to
+    // alpha |100> + beta |011>
     PauliX X;
-    X.ApplyX(TQC.state[1]);
+    X.ApplyX(TQC.state, 0);
 
-    EXPECT_DOUBLE_EQ(TQC.state[0].alpha, 0.0);
-    EXPECT_DOUBLE_EQ(TQC.state[0].beta, 1.0);
+    // Find syndromes
+    TQC.MeasureSyndrome();
+    EXPECT_EQ(TQC.syndrome1, 1);
+    EXPECT_EQ(TQC.syndrome2, 0);
+}
 
-    EXPECT_DOUBLE_EQ(TQC.state[1].alpha, 1.0);
-    EXPECT_DOUBLE_EQ(TQC.state[1].beta, 0.0);
+TEST(Qubit3CodeTest, Decode) {
 
-    EXPECT_DOUBLE_EQ(TQC.state[2].alpha, 0.0);
-    EXPECT_DOUBLE_EQ(TQC.state[2].beta, 1.0);
+    ThreeQubitCode TQC;
+    std::complex<double> alpha(1.0, 1.0);
+    std::complex<double> beta(1.0, 1.0);
+    TQC.EncodeLogical(alpha, beta);
 
-    // Restore bit using syndromes
+    // Flip the leftmost bit taking
+    // alpha |000> + beta |111> to
+    // alpha |100> + beta |011>
+    PauliX X;
+    X.ApplyX(TQC.state, 0);
+
+    // Find syndromes
+    TQC.MeasureSyndrome();
+    TQC.Decode();
+    EXPECT_EQ(TQC.errorIndex, 0);
+}
+
+TEST(Qubit3CodeTest, ApplySyndrome) {
+
+    ThreeQubitCode TQC;
+    std::complex<double> alpha(1.0, 1.0);
+    std::complex<double> beta(1.0, 1.0);
+    TQC.EncodeLogical(alpha, beta);
+
+    // Flip the leftmost bit taking
+    // alpha |000> + beta |111> to
+    // alpha |100> + beta |011>
+    PauliX X;
+    X.ApplyX(TQC.state, 0);
+
+    // Find syndromes
+    TQC.MeasureSyndrome();
+    TQC.Decode();
     TQC.ApplySyndrome();
 
-    EXPECT_DOUBLE_EQ(TQC.state[0].alpha, 0.0);
-    EXPECT_DOUBLE_EQ(TQC.state[0].beta, 1.0);
-
-    EXPECT_DOUBLE_EQ(TQC.state[1].alpha, 0.0);
-    EXPECT_DOUBLE_EQ(TQC.state[1].beta, 1.0);
-
-    EXPECT_DOUBLE_EQ(TQC.state[2].alpha, 0.0);
-    EXPECT_DOUBLE_EQ(TQC.state[2].beta, 1.0);
+    // Should be returned to old state
+    EXPECT_DOUBLE_EQ(TQC.state.state[0].real(), alpha.real());
+    EXPECT_DOUBLE_EQ(TQC.state.state[0].imag(), alpha.imag());
+    EXPECT_DOUBLE_EQ(TQC.state.state[7].real(), beta.real());
+    EXPECT_DOUBLE_EQ(TQC.state.state[7].imag(), beta.imag());
 }
