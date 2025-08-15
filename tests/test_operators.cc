@@ -48,7 +48,7 @@ TEST(OperatorTest, Pauli_Z) {
     EXPECT_DOUBLE_EQ(q.state[4].imag(), -beta.imag());
 }
 
-TEST(OperatorTest, Hadamard) {
+TEST(OperatorTest, Hadamard_Gate) {
     QubitState q(3);
     std::complex<double> alpha(0.0, 1.0);
     std::complex<double> beta(1.0, 1.0);
@@ -77,4 +77,31 @@ TEST(OperatorTest, Hadamard) {
     EXPECT_DOUBLE_EQ(q.state[0].imag(), expected000.imag());
     EXPECT_DOUBLE_EQ(q.state[4].real(), expected100.real());
     EXPECT_DOUBLE_EQ(q.state[4].imag(), expected100.imag());
+}
+
+TEST(OperatorTest, CNOT_Gate) {
+    QubitState q(2);
+    std::complex<double> alpha(0.0, 1.0);
+    std::complex<double> beta(1.0, 1.0);
+    // Create state:
+    // alpha |00> + beta |10>
+    q.state[0] = alpha;
+    q.state[2] = beta;
+
+    // Apply CNOT gate from first to
+    // second bit. This should take us
+    // to state:
+    // alpha |00> + beta |11>
+    CNOT CN;
+    CN.ApplyCN(q, 0, 1, 2);
+
+    EXPECT_DOUBLE_EQ(q.state[0].real(), alpha.real());
+    EXPECT_DOUBLE_EQ(q.state[0].imag(), alpha.imag());
+    // Previous state should now be zero
+    EXPECT_DOUBLE_EQ(q.state[2].real(), 0.0);
+    EXPECT_DOUBLE_EQ(q.state[2].imag(), 0.0);
+
+    // New state should equal beta
+    EXPECT_DOUBLE_EQ(q.state[3].real(), beta.real());
+    EXPECT_DOUBLE_EQ(q.state[3].imag(), beta.imag());
 }

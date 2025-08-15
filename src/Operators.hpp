@@ -22,4 +22,10 @@ public:
     void ApplyH(QubitState &psi, const int &index, const int &numQubits);
 };
 
+class CNOT {
+public:
+    CNOT() {};
+    void ApplyCN(QubitState &psi, const int &source, const int &target, const int &numQubits);
+};
+
 #endif /* DDFFC357_B156_4108_B576_06019B4A3A44 */
