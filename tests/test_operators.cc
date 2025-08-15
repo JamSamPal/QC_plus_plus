@@ -47,3 +47,34 @@ TEST(OperatorTest, Pauli_Z) {
     EXPECT_DOUBLE_EQ(q.state[4].real(), -beta.real());
     EXPECT_DOUBLE_EQ(q.state[4].imag(), -beta.imag());
 }
+
+TEST(OperatorTest, Hadamard) {
+    QubitState q(3);
+    std::complex<double> alpha(0.0, 1.0);
+    std::complex<double> beta(1.0, 1.0);
+
+    // alpha |000> + beta |100>
+    q.state[0] = alpha;
+    q.state[4] = beta;
+
+    // Apply Hadamard to qubit 0
+    Hadamard H;
+    H.ApplyH(q, 0, 3);
+
+    // Expected transformation:
+    // |000> → (|000> + |100>) / sqrt(2)
+    // |100> → (|000> - |100>) / sqrt(2)
+    //
+    // So final state:
+    // ((alpha + beta) / sqrt(2))|000>
+    // ((alpha - beta) / sqrt(2))|100>
+
+    double invSqrt2 = 1.0 / std::sqrt(2.0);
+    std::complex<double> expected000 = (alpha + beta) * invSqrt2;
+    std::complex<double> expected100 = (alpha - beta) * invSqrt2;
+
+    EXPECT_DOUBLE_EQ(q.state[0].real(), expected000.real());
+    EXPECT_DOUBLE_EQ(q.state[0].imag(), expected000.imag());
+    EXPECT_DOUBLE_EQ(q.state[4].real(), expected100.real());
+    EXPECT_DOUBLE_EQ(q.state[4].imag(), expected100.imag());
+}

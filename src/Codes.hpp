@@ -7,10 +7,12 @@
 // Holds all the QEC codes
 //
 //
+
+enum class CodeMode { BitFlip,
+                      PhaseFlip };
 class ThreeQubitCode {
 public:
-    const int c_numQubits = 3;
-    ThreeQubitCode() : state(c_numQubits) {};
+    ThreeQubitCode(CodeMode code) : state(c_numQubits), codeMode(code) {};
     QubitState state;
     void EncodeLogical(const std::complex<double> &alpha, const std::complex<double> &beta);
     void MeasureSyndrome();
@@ -19,12 +21,14 @@ public:
     int syndrome1;
     int syndrome2;
     int errorIndex;
-    PauliX X;
-    PauliZ Z;
-    MatrixHelper M;
 
 private:
-    double ExpectationZZ(const int &indexA, const int &indexB);
+    const int c_numQubits = 3;
+    CodeMode codeMode;
+    PauliX X;
+    PauliZ Z;
+    Hadamard H;
+    MatrixHelper M;
     static const int lookup[2][2];
 };
 

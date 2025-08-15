@@ -43,3 +43,22 @@ void PauliZ::ApplyZ(QubitState &psi, const int &index, const int &numQubits) {
         }
     }
 }
+
+void Hadamard::ApplyH(QubitState &psi, const int &index, const int &numQubits) {
+    // Applies Hadamard gate to qubit in position index
+    // H|0> = (|0> + |1>)(sqrt(2))
+    // H|1> = (|0> - |1>)(sqrt(2))
+    int bit = 1 << (numQubits - 1 - index);
+    QubitState temp(numQubits);
+    temp = psi;
+    double invSqrt2 = 1.0 / std::sqrt(2.0);
+    for (int i = 0; i < temp.state.size(); i++) {
+        int isBitSet = i & bit;
+        int flippedBit = i ^ bit;
+        if (isBitSet == 0) {
+            psi.state[i] = invSqrt2 * (temp.state[i] + temp.state[flippedBit]);
+        } else {
+            psi.state[i] = invSqrt2 * (temp.state[flippedBit] - temp.state[i]);
+        }
+    }
+}
