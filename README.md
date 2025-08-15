@@ -55,9 +55,9 @@ We may now consider the action of the Pauli Z matrix [[1,0],[0,-1]] on the ith q
 
 This operator is problematic as it can be used to determine the ith bit exactly, destroying the superposition.
 
-By combining two operators A = Z_1 * Z_2, however, we only find out about the state |b_1,b_2>: it will equal +1 if there are no flips in the first two bits and -1 otherwise. Because it doesn't tell us about the individual bits it preserves the quantum state and doesn't collapse it which is what we wanted.
+By combining two Z operators and taking their expectation value A = <Z_1 * Z_2>, however, we only find out about the state |b_1,b_2>: it will equal +1 if there are no flips in the first two bits and -1 otherwise. Because it doesn't tell us about the individual bits it preserves the quantum state and doesn't collapse it which is what we wanted.
 
-Forming the operator B = Z_2 * Z_3 we have the same thing for the second and third bits. Thus:
+Forming B = <Z_2 * Z_3> we have the same thing for the second and third bits. Thus:
 
 A = 1, B = 1 -> No error
 
