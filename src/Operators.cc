@@ -62,3 +62,25 @@ void Hadamard::ApplyH(QubitState &psi, const int &index, const int &numQubits) {
         }
     }
 }
+
+void CNOT::ApplyCN(QubitState &psi, const int &source, const int &target, const int &numQubits) {
+    // Applies CNOT gate from source bit to target bit
+    // If source is |0> then target is as well, else it
+    // becomes |1>
+
+    int sourceBit = 1 << (numQubits - 1 - source);
+    int targetBit = 1 << (numQubits - 1 - target);
+
+    for (int i = 0; i < psi.state.size(); i++) {
+        int isBitSet = i & sourceBit;
+
+        // Flip the target qubit if source is set
+        if (isBitSet != 0) {
+            int j = i ^ targetBit;
+
+            if (i < j) {
+                std::swap(psi.state[i], psi.state[j]);
+            }
+        }
+    }
+}
