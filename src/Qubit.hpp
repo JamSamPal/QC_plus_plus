@@ -22,4 +22,10 @@ constexpr int QubitState::GetNumStates(const int &numQubits) {
     return 1 << numQubits;
 }
 
+class DensityMatrix {
+public:
+    DensityMatrix(const int &size) : densityMatrix(size, std::vector<std::complex<double>>(size, {0.0, 0.0})) {};
+    std::vector<std::vector<std::complex<double>>> densityMatrix;
+};
+
 #endif /* D670A8F1_C2B1_4FCE_9D6A_1D8D5411A39A */

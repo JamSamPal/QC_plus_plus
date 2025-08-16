@@ -8,6 +8,8 @@
 class MatrixHelper {
 public:
     double InnerProduct(const QubitState &input1, const QubitState &input2);
+    DensityMatrix GetReducedDensityMatrix(const DensityMatrix &dM, const int &qubitToKeep, const int &numQubits);
+    DensityMatrix GetDensityMatrix(const QubitState &input1);
 };
 
 struct BlochVector {
@@ -20,7 +22,7 @@ public:
     BlochSphere() : size(7) {};
     BlochSphere(const int &size) : size(size) {};
     void DrawBlochSphere(const BlochVector &bloch);
-    BlochVector GetBlochVector(const QubitState &state, const int &index);
+    BlochVector GetBlochVector(const DensityMatrix &densityMatrix);
 
 private:
     int size;
